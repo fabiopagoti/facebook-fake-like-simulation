@@ -11,6 +11,7 @@ to setup
   create_facebook_real_users
   create_facebook_fake_users
 end
+
 ; ---------------------------
 
 ; ****************************
@@ -66,7 +67,7 @@ end
 ; Facebook REAL Users 
 
 to create_facebook_real_users
-  create-facebook-real-users calculate_real_users number_of_facebook_users fake_likers
+  create-facebook-real-users calculate_real_users number_of_facebook_users fake_users
   [
     fd 100
     setxyz random-xcor random-ycor random-zcor
@@ -85,17 +86,14 @@ to-report get_facebook_real_user_default_color
 end
 
 
-to-report calculate_real_users [im_facebook_users im_fake_likers]
-  show im_facebook_users * ( 1 - (im_fake_likers / 100 ) )
-  report im_facebook_users * ( 1 - (im_fake_likers / 100 ) )
+to-report calculate_real_users [im_facebook_users im_fake_users]
+  report im_facebook_users * ( 1 - (im_fake_users / 100 ) )
 end
 
 ; ****************************
 ; Facebook FAKE Users 
-
-
 to create_facebook_fake_users
-  create-facebook-fake-users calculate_fake_users number_of_facebook_users fake_likers
+  create-facebook-fake-users calculate_fake_users number_of_facebook_users fake_users
   [
     fd 100
     setxyz random-xcor random-ycor random-zcor
@@ -113,20 +111,25 @@ to-report get_facebook_fake_user_default_color
   report red
 end
 
-to-report calculate_fake_users [im_facebook_users im_fake_likers]
-  show im_facebook_users * im_fake_likers / 100 
-  report im_facebook_users * im_fake_likers / 100
+to-report calculate_fake_users [im_facebook_users im_fake_users]
+  report im_facebook_users * im_fake_users / 100
 end
 
 ; ---------------------------
 
 
 
-
-
 ; ****************************
 ; Facebook Likes
 ; ****************************
+to make_facebook_real_users_like_pages
+  
+end
+
+to make_facebook_fake_users_like_pages
+  
+end
+
 to like_facebook_pages
   ask facebook-pages
   [
@@ -136,6 +139,16 @@ to like_facebook_pages
   ]
 end
 ; ---------------------------
+
+
+
+
+; ****************************
+; Go
+; ****************************
+to go
+  
+end
 @#$#@#$#@
 GRAPHICS-WINDOW
 0
@@ -199,10 +212,10 @@ url
 HORIZONTAL
 
 BUTTON
-139
-274
-236
-307
+148
+384
+245
+417
 Reset
 clear-all
 NIL
@@ -265,10 +278,10 @@ NIL
 1
 
 BUTTON
-27
-273
-125
-306
+36
+383
+134
+416
 Setup
 setup
 NIL
@@ -286,8 +299,8 @@ SLIDER
 148
 264
 181
-fake_likers
-fake_likers
+fake_users
+fake_users
 0
 100
 7
@@ -295,6 +308,70 @@ fake_likers
 1
 %
 HORIZONTAL
+
+BUTTON
+321
+362
+384
+395
+Go
+go
+T
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+SLIDER
+25
+210
+279
+243
+engaged_real_users
+engaged_real_users
+0
+100
+50
+1
+1
+% real users
+HORIZONTAL
+
+SLIDER
+26
+260
+284
+293
+engaged_fake_users
+engaged_fake_users
+0
+100
+50
+1
+1
+% fake users
+HORIZONTAL
+
+BUTTON
+302
+449
+405
+482
+Go a Tick
+go
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
 
 @#$#@#$#@
 ## WHAT IS IT?
