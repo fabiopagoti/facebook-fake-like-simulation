@@ -1,5 +1,6 @@
 breed [facebook-pages facebook-page]
-breed [facebook-users facebook-user] 
+breed [facebook-real-users facebook-real-user] 
+breed [facebook-fake-users facebook-fake-user] 
 
 
 ; ****************************
@@ -7,7 +8,8 @@ breed [facebook-users facebook-user]
 ; ****************************
 to setup
   create_facebook_pages
-  create_facebook_users
+  create_facebook_real_users
+  create_facebook_fake_users
 end
 ; ---------------------------
 
@@ -48,19 +50,8 @@ end
 ; ****************************
 
 to create_facebook_users
-  create-facebook-users number_of_facebook_users
-  [
-    fd 100
-    setxyz random-xcor random-ycor random-zcor
-    set_facebook_user_default_style
-  ]
-  
-end
-
-to set_facebook_user_default_style
-  set shape get_facebook_user_shape
-  set size get_facebook_user_default_size
-  set color get_facebook_user_default_color
+  create_facebook_real_users
+  create_facebook_fake_users
 end
 
 to-report get_facebook_user_shape
@@ -71,9 +62,62 @@ to-report get_facebook_user_default_size
   report 1
 end
 
-to-report get_facebook_user_default_color
+; ****************************
+; Facebook REAL Users 
+
+to create_facebook_real_users
+  create-facebook-real-users calculate_real_users number_of_facebook_users fake_likers
+  [
+    fd 100
+    setxyz random-xcor random-ycor random-zcor
+    set_facebook_real_user_default_style
+  ]
+end
+
+to set_facebook_real_user_default_style
+  set shape get_facebook_user_shape
+  set size get_facebook_user_default_size
+  set color get_facebook_real_user_default_color
+end
+
+to-report get_facebook_real_user_default_color
   report blue
 end
+
+
+to-report calculate_real_users [im_facebook_users im_fake_likers]
+  show im_facebook_users * ( 1 - (im_fake_likers / 100 ) )
+  report im_facebook_users * ( 1 - (im_fake_likers / 100 ) )
+end
+
+; ****************************
+; Facebook FAKE Users 
+
+
+to create_facebook_fake_users
+  create-facebook-fake-users calculate_fake_users number_of_facebook_users fake_likers
+  [
+    fd 100
+    setxyz random-xcor random-ycor random-zcor
+    set_facebook_fake_user_default_style
+  ]
+end
+
+to set_facebook_fake_user_default_style
+  set shape get_facebook_user_shape
+  set size get_facebook_user_default_size
+  set color get_facebook_fake_user_default_color
+end
+
+to-report get_facebook_fake_user_default_color
+  report red
+end
+
+to-report calculate_fake_users [im_facebook_users im_fake_likers]
+  show im_facebook_users * im_fake_likers / 100 
+  report im_facebook_users * im_fake_likers / 100
+end
+
 ; ---------------------------
 
 
@@ -197,7 +241,7 @@ number_of_facebook_users
 number_of_facebook_users
 0
 10000
-5000
+100
 10
 1
 people
@@ -236,6 +280,21 @@ NIL
 NIL
 NIL
 1
+
+SLIDER
+92
+148
+264
+181
+fake_likers
+fake_likers
+0
+100
+7
+1
+1
+%
+HORIZONTAL
 
 @#$#@#$#@
 ## WHAT IS IT?
