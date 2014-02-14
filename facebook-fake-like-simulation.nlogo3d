@@ -1,9 +1,26 @@
+breed [facebook-pages facebook-page]
+breed [facebook-users facebook-user] 
+
+
+; ****************************
+; Facebook Setup
+; ****************************
+to setup
+  create_facebook_pages
+  create_facebook_users
+end
+; ---------------------------
+
+; ****************************
+; Facebook Pages 
+; ****************************
 to create_facebook_pages
-  create-turtles number_of_facebook_pages [
+  create-facebook-pages number_of_facebook_pages 
+  [
     fd 100
     setxyz random-xcor random-ycor random-zcor
     set_facebook_page_default_style
-    ]
+  ]
   
 end
 
@@ -24,6 +41,57 @@ end
 to-report get_facebook_page_default_color
   report white
 end
+; ---------------------------
+
+; ****************************
+; Facebook Users
+; ****************************
+
+to create_facebook_users
+  create-facebook-users number_of_facebook_users
+  [
+    fd 100
+    setxyz random-xcor random-ycor random-zcor
+    set_facebook_user_default_style
+  ]
+  
+end
+
+to set_facebook_user_default_style
+  set shape get_facebook_user_shape
+  set size get_facebook_user_default_size
+  set color get_facebook_user_default_color
+end
+
+to-report get_facebook_user_shape
+  report "person"
+end
+
+to-report get_facebook_user_default_size
+  report 1
+end
+
+to-report get_facebook_user_default_color
+  report blue
+end
+; ---------------------------
+
+
+
+
+
+; ****************************
+; Facebook Likes
+; ****************************
+to like_facebook_pages
+  ask facebook-pages
+  [
+    ifelse random 2 = 0
+    [ set size size + 0.1]
+    [ set size size + 0]    
+  ]
+end
+; ---------------------------
 @#$#@#$#@
 GRAPHICS-WINDOW
 0
@@ -55,10 +123,10 @@ ticks
 30.0
 
 BUTTON
-29
-67
-202
-100
+279
+19
+452
+52
 Create Facebook Pages
 create_facebook_pages
 NIL
@@ -74,7 +142,7 @@ NIL
 SLIDER
 25
 18
-301
+270
 51
 number_of_facebook_pages
 number_of_facebook_pages
@@ -83,16 +151,82 @@ number_of_facebook_pages
 238
 1
 1
-Pages
+url
 HORIZONTAL
 
 BUTTON
-81
-327
-146
-360
+139
+274
+236
+307
 Reset
 clear-all
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+315
+146
+410
+179
+Like Pages
+like_facebook_pages
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+SLIDER
+25
+69
+267
+102
+number_of_facebook_users
+number_of_facebook_users
+0
+10000
+5000
+10
+1
+people
+HORIZONTAL
+
+BUTTON
+280
+70
+453
+103
+Create Facebook Users
+create_facebook_users
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+27
+273
+125
+306
+Setup
+setup
 NIL
 1
 T
