@@ -21,7 +21,7 @@ to create_facebook_pages
   create-facebook-pages number_of_facebook_pages 
   [
     fd 100
-    setxyz random-xcor random-ycor random-zcor
+    setxyz random-xcor * 0.8 random-ycor * 0.8  random-zcor * 0.8 
     set_facebook_page_default_style
   ]
   
@@ -38,11 +38,49 @@ to-report get_facebook_page_shape
 end
 
 to-report get_facebook_page_default_size
-  report 1
+  report 4
 end
 
 to-report get_facebook_page_default_color
   report white
+end
+
+to update_facebook_pages_likes
+  
+  ask facebook-pages
+  [
+    let number_of_real_likes 0
+    let number_of_fake_likes 0
+    
+    set number_of_real_likes count my-in-links with [ color = get_real_like_color ]
+    set number_of_fake_likes count my-in-links with [ color = get_fake_like_color ]
+    
+    let number_of_likes 0    
+    set number_of_likes number_of_real_likes + number_of_fake_likes
+    
+    ifelse number_of_real_likes = number_of_fake_likes
+    [
+      set color grey + 5
+    ]
+    [
+    ifelse number_of_real_likes > number_of_fake_likes
+    [ 
+      ifelse number_of_fake_likes = 0
+      [set color white]
+ 
+      [
+        set color grey + ( number_of_real_likes / number_of_likes ) * 5]
+    ]
+    [ 
+      ifelse number_of_real_likes = 0
+      [set color black]
+      
+      [
+        set color grey - ( number_of_fake_likes / number_of_likes ) * 5 ]
+    ]
+    ]
+  ]
+  
 end
 ; ---------------------------
 
@@ -70,7 +108,7 @@ to create_facebook_real_users
   create-facebook-real-users calculate_real_users number_of_facebook_users fake_users
   [
     fd 100
-    setxyz random-xcor random-ycor random-zcor
+    setxyz random-xcor * 0.8 random-ycor * 0.8  random-zcor * 0.8
     set_facebook_real_user_default_style
   ]
 end
@@ -96,7 +134,7 @@ to create_facebook_fake_users
   create-facebook-fake-users calculate_fake_users number_of_facebook_users fake_users
   [
     fd 100
-    setxyz random-xcor random-ycor random-zcor
+        setxyz random-xcor * 0.8 random-ycor * 0.8  random-zcor * 0.8
     set_facebook_fake_user_default_style
   ]
 end
@@ -123,23 +161,50 @@ end
 ; Facebook Likes
 ; ****************************
 to make_facebook_real_users_like_pages
+  let users_who_will_like_some_pages 0
+  set users_who_will_like_some_pages 
+  ( 
+    calculate_real_users number_of_facebook_users fake_users 
+    * engaged_real_users / 100 
+    )
   
+  ask n-of users_who_will_like_some_pages facebook-real-users
+  [
+    create-link-to one-of facebook-pages
+    [
+      set color get_real_like_color
+    ]
+    
+  ]
 end
 
 to make_facebook_fake_users_like_pages
+    let users_who_will_like_some_pages 0
+  set users_who_will_like_some_pages 
+  ( 
+    calculate_fake_users number_of_facebook_users fake_users 
+    * engaged_fake_users / 100 
+    )
   
-end
-
-to like_facebook_pages
-  ask facebook-pages
+  ask n-of users_who_will_like_some_pages facebook-fake-users
   [
-    ifelse random 2 = 0
-    [ set size size + 0.1]
-    [ set size size + 0]    
+    create-link-to one-of facebook-pages
+    [
+      set color get_fake_like_color
+    ]
   ]
 end
-; ---------------------------
 
+to-report get_real_like_color
+  report blue
+end
+
+to-report get_fake_like_color
+  report red
+end
+
+
+; ---------------------------
 
 
 
@@ -147,17 +212,19 @@ end
 ; Go
 ; ****************************
 to go
-  
+  make_facebook_real_users_like_pages
+  make_facebook_fake_users_like_pages
+  update_facebook_pages_likes
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
 0
 0
-439
-460
-16
-16
-13.0
+3060
+3081
+30
+30
+50.0
 1
 10
 1
@@ -167,12 +234,12 @@ GRAPHICS-WINDOW
 1
 1
 1
--16
-16
--16
-16
--16
-16
+-30
+30
+-30
+30
+-30
+30
 1
 0
 1
@@ -205,7 +272,7 @@ number_of_facebook_pages
 number_of_facebook_pages
 0
 1000
-238
+1
 1
 1
 url
@@ -228,23 +295,6 @@ NIL
 NIL
 1
 
-BUTTON
-315
-146
-410
-179
-Like Pages
-like_facebook_pages
-NIL
-1
-T
-OBSERVER
-NIL
-NIL
-NIL
-NIL
-1
-
 SLIDER
 25
 69
@@ -254,7 +304,7 @@ number_of_facebook_users
 number_of_facebook_users
 0
 10000
-100
+5150
 10
 1
 people
@@ -283,7 +333,7 @@ BUTTON
 134
 416
 Setup
-setup
+clear-all\nsetup
 NIL
 1
 T
@@ -303,7 +353,7 @@ fake_users
 fake_users
 0
 100
-7
+50
 1
 1
 %
@@ -335,7 +385,7 @@ engaged_real_users
 engaged_real_users
 0
 100
-50
+5
 1
 1
 % real users
@@ -350,7 +400,7 @@ engaged_fake_users
 engaged_fake_users
 0
 100
-50
+81
 1
 1
 % fake users
@@ -372,6 +422,36 @@ NIL
 NIL
 NIL
 1
+
+SLIDER
+301
+211
+535
+244
+number_of_real_likes_per_day
+number_of_real_likes_per_day
+0
+10
+5
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+332
+276
+584
+309
+number_of_fake_likes_per_day
+number_of_fake_likes_per_day
+0
+1000
+500
+1
+1
+NIL
+HORIZONTAL
 
 @#$#@#$#@
 ## WHAT IS IT?
